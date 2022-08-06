@@ -1,0 +1,22 @@
+import cv2
+import numpy as np
+from pyzbar.pyzbar import decode
+
+cap = cv2.videoCapture(0)
+cap.set(3,640)
+cap.set(4,480)
+
+sendQR=""
+
+while True:
+  success,img = cap.read()
+  for barcode in decode(img):
+    print(barcode.rect)
+    mydata = barcode.data.decode('utf-8')
+    sendQR = mydata
+  cv2.imshow('Result',img)
+  cv2.waitkey(1)
+  
+  
+  import requests
+  requests.post("http://127.0.0.1:5000/verifyvehicleownerinfo",{"vehicleinfo":sendQR})
